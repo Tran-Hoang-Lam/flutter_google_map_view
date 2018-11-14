@@ -50,7 +50,7 @@ class MapViewPlugin(val activity: Activity) : MethodCallHandler {
         lateinit var registrar: Registrar
 
         @JvmStatic
-        fun registerWith(registrar: Registrar): Unit {
+        fun registerWith(registrar: Registrar) {
             channel = MethodChannel(registrar.messenger(), "com.apptreesoftware.map_view")
             val plugin = MapViewPlugin(activity = registrar.activity())
             channel.setMethodCallHandler(plugin)
@@ -196,7 +196,7 @@ class MapViewPlugin(val activity: Activity) : MethodCallHandler {
         }
     }
 
-    override fun onMethodCall(call: MethodCall, result: Result): Unit {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         when {
             call.method == "setApiKey" -> result.success(false)
             call.method == "show" -> {
@@ -205,18 +205,18 @@ class MapViewPlugin(val activity: Activity) : MethodCallHandler {
                     return
                 }
                 val mapOptions = call.argument<Map<String, Any>>("mapOptions")
-                val cameraDict = mapOptions["cameraPosition"] as Map<String, Any>
+                val cameraDict = mapOptions!!["cameraPosition"] as Map<String, Any>
                 initialCameraPosition = getCameraPosition(cameraDict)
                 toolbarActions = getToolbarActions(call.argument<List<Map<String, Any>>>("actions"))
-                showUserLocation = mapOptions["showUserLocation"] as Boolean
-                showMyLocationButton = mapOptions["showMyLocationButton"] as Boolean
-                showCompassButton = mapOptions["showCompassButton"] as Boolean
-                hideToolbar = mapOptions["hideToolbar"] as Boolean
-                mapTitle = mapOptions["title"] as String
+                showUserLocation = mapOptions!!["showUserLocation"] as Boolean
+                showMyLocationButton = mapOptions!!["showMyLocationButton"] as Boolean
+                showCompassButton = mapOptions!!["showCompassButton"] as Boolean
+                hideToolbar = mapOptions!!["hideToolbar"] as Boolean
+                mapTitle = mapOptions!!["title"] as String
 
-                if (mapOptions["mapViewType"] != null) {
-                    val mappedMapType: Int? = mapTypeMapping.get(mapOptions["mapViewType"]);
-                    if (mappedMapType != null) mapViewType = mappedMapType;
+                if (mapOptions!!["mapViewType"] != null) {
+                    val mappedMapType: Int? = mapTypeMapping.get(mapOptions!!["mapViewType"])
+                    if (mappedMapType != null) mapViewType = mappedMapType
                 }
 
                 val intent = Intent(activity, MapActivity::class.java)
